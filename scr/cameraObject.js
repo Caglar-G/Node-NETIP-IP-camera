@@ -111,20 +111,24 @@ module.exports = class CAM_NETIP
 
     //--login NETIP--//
     async _login(){
-        await this.promiseSocket.connect({port: this.host_port, host: this.host_ip})
-        const response = await this._sendData(1000,{
-            "EncryptType":"MD5",
-            "LoginType": "DVRIP-Web",
-            "PassWord": "tlJwpbo6",
-            "UserName": "admin",
-        })
-        this.session = response.SessionID;
-        this.alive_time = response.AliveInterval;
+        try {
+            await this.promiseSocket.connect({port: this.host_port, host: this.host_ip})
+            const response = await this._sendData(1000,{
+                "EncryptType":"MD5",
+                "LoginType": "DVRIP-Web",
+                "PassWord": "tlJwpbo6",
+                "UserName": "admin",
+            })
+            this.session = response.SessionID;
+            this.alive_time = response.AliveInterval;
 
-        this.set_alarm();
-        //--Initilaze Keep Alive--//
-        this.aliveInterval = setInterval(this.keep_alive.bind(this), 20000);
-        //----//
+            this.set_alarm();
+            //--Initilaze Keep Alive--//
+            this.aliveInterval = setInterval(this.keep_alive.bind(this), 20000);
+            //----//
+        } catch (error) {
+            console.error(error);
+        }
     }
     //----//
 
