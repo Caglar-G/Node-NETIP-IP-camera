@@ -1,5 +1,5 @@
 const onvif = require('node-onvif');
-const camObejct = require('./cameraObject.js');  
+const camObejct = require('../cameraObject.js');  
 
 var cameras = [];
 

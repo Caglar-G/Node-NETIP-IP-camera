@@ -176,6 +176,29 @@ module.exports = class CAM_NETIP
     }
     //----//
 
+     //--get info from cam--//
+     async takeAsnap(folderLocation){
+        var url = "http://"+this.host_ip+"/webcapture.jpg?command=snap&channel=1&user=admin&password=tlJwpbo6";
+        return new Promise((resolve, reject) => {
+            client.get(url, (res) => {
+                if (res.statusCode === 200) {
+                    res.pipe(fs.createWriteStream(filepath))
+                        .on('error', reject)
+                        .once('close', () => {
+                            
+                            resolve(filepath)
+                        });
+                } else {
+                    // Consume response data to free up memory
+                    res.resume();
+                    reject(new Error(`Request Failed With a Status Code: ${res.statusCode}`));
+
+                }
+            });
+        });
+    }
+    //----//
+
 
     //--send data--//
     async _sendData(command,datatoSend){
