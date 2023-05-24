@@ -182,6 +182,7 @@ module.exports = class CAM_NETIP
         let respose_Head;
         let respose_Data;
         await mutex.runExclusive(async (resolve) => {
+            try {
             const data = JSON.stringify(datatoSend);
 
             const structed = struct.pack(
@@ -200,7 +201,7 @@ module.exports = class CAM_NETIP
             await Promise.timeout(this.promiseSocket.write(data), 3000);
             await Promise.timeout(this.promiseSocket.write(lastPart), 3000);
 
-            try {
+         
             const content = await timeout(this._readWait(), 3000);
 
           
@@ -210,6 +211,7 @@ module.exports = class CAM_NETIP
             } catch (error) {
                 console.error(error)
                 clearInterval(this.aliveInterval);
+                this._socket.destroy()
                 this.configure();
             }
            
