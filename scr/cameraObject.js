@@ -106,7 +106,7 @@ module.exports = class CAM_NETIP
         await this._login();
         //----//
     }
-
+                                                                         
 
 
     //--login NETIP--//
@@ -139,7 +139,7 @@ module.exports = class CAM_NETIP
             if(Object.keys(data)[0] == "AlarmInfo" 
                 && data.AlarmInfo.Status == "Start" )
             {
-                this.startAlarmCallback(data,this.tag);
+                this.startAlarmCallback(this, data);
             }
             else if(Object.keys(data)[0] == "AlarmInfo" 
                 && data.AlarmInfo.Status == "Stop" )
@@ -182,11 +182,11 @@ module.exports = class CAM_NETIP
         return new Promise((resolve, reject) => {
             client.get(url, (res) => {
                 if (res.statusCode === 200) {
-                    res.pipe(fs.createWriteStream(filepath))
+                    res.pipe(fs.createWriteStream(folderLocation))
                         .on('error', reject)
                         .once('close', () => {
                             
-                            resolve(filepath)
+                            resolve(folderLocation)
                         });
                 } else {
                     // Consume response data to free up memory

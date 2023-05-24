@@ -1,5 +1,5 @@
 const onvif = require('node-onvif');
-const camObejct = require('../cameraObject.js');  
+const camObejct = require('../scr/cameraObject');  
 
 var cameras = [];
 
@@ -22,10 +22,12 @@ var cameras = [];
                     tag:"cam"+index,
                     host_ip:ipAddress,
                     host_port:"34567",
-                    startAlarmCallback:async (data, tag) =>{
+                    startAlarmCallback:async ($this, data) =>{
                         console.log("Alarm Start Received")
-                        console.log(data)
-                        console.log(tag, ipAddress)
+                        console.log($this.tag+"_"+ipAddress+"_"+data.AlarmInfo.StartTime.toString())
+                        var url = await $this.takeAsnap(
+                            __dirname+"/Alarm_Images/"+$this.tag+"_"+ipAddress+"_"+data.AlarmInfo.StartTime.toString()+".jpg");
+
                     },
                     stopAlarmCallback:async (data, tag) =>{
                         console.log("Alarm Stop Received")
