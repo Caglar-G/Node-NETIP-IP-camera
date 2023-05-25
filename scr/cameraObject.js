@@ -127,7 +127,7 @@ module.exports = class CAM_NETIP
             this.aliveInterval = setInterval(this.keep_alive.bind(this), 20000);
             //----//
         } catch (error) {
-            console.error(error);
+            console.error("ERROR on" + this.host_ip, error)
         }
     }
     //----//
@@ -135,7 +135,8 @@ module.exports = class CAM_NETIP
 
     //--callback--//
     async _socketOnData(data){
-        data = JSON.parse(data.subarray( 20, data.length-1 ));
+        try {
+            data = JSON.parse(data.subarray( 20, data.length-1 ));
             if(Object.keys(data)[0] == "AlarmInfo" 
                 && data.AlarmInfo.Status == "Start" )
             {
@@ -146,6 +147,10 @@ module.exports = class CAM_NETIP
             {
                 this.stopAlarmCallback(data,this.tag);
             }
+        } catch (error) {
+            console.error("ERROR on" + this.host_ip, error)
+        }
+       
          // console.log(this.tag, data)
     }
     //----//
@@ -232,7 +237,7 @@ module.exports = class CAM_NETIP
                 respose_Data = JSON.parse(content.subarray( 20, content.length-1 ));
                 this.packet_count += 1;
             } catch (error) {
-                console.error(error)
+                console.error("ERROR on" + this.host_ip, error)
                 clearInterval(this.aliveInterval);
                 this._socket.destroy()
                 this.configure();
