@@ -71,6 +71,7 @@ module.exports = class CAM_NETIP
         this.packet_count = 0;
         this.session = 0;
         this.alive_time =0;
+        this.status = "offline";
         //----//
 
 
@@ -125,9 +126,13 @@ module.exports = class CAM_NETIP
             this.set_alarm();
             //--Initilaze Keep Alive--//
             this.aliveInterval = setInterval(this.keep_alive.bind(this), 20000);
+            this.status = "online"
             //----//
         } catch (error) {
             console.error("ERROR on" + this.host_ip, error)
+            this.status = "offline"
+            clearInterval(this.aliveInterval);
+            this._socket.destroy()
         }
     }
     //----//
@@ -149,6 +154,9 @@ module.exports = class CAM_NETIP
             }
         } catch (error) {
             console.error("ERROR on" + this.host_ip, error)
+            this.status = "offline"
+            clearInterval(this.aliveInterval);
+            this._socket.destroy()
         }
        
          // console.log(this.tag, data)
@@ -238,9 +246,9 @@ module.exports = class CAM_NETIP
                 this.packet_count += 1;
             } catch (error) {
                 console.error("ERROR on" + this.host_ip, error)
+                this.status = "offline"
                 clearInterval(this.aliveInterval);
                 this._socket.destroy()
-                this.configure();
             }
            
         })
